@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Folder referensi template sumber (di-gitignore), bukan bagian aplikasi.
+    "elegencia-*/**",
   ]),
 ]);
 

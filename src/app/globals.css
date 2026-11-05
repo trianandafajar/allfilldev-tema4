@@ -1,0 +1,275 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Breakpoint disamakan dengan Bootstrap 5 supaya layout sama dengan template asli:
+ * sm 576, md 768, lg 992, xl 1200, 2xl 1400.
+ */
+@theme {
+  --breakpoint-sm: 36rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 62rem;
+  --breakpoint-xl: 75rem;
+  --breakpoint-2xl: 87.5rem;
+
+  /*
+   * Ukuran fluid. Desain asli untuk 1920px dan semua clamp berujung di nilai itu,
+   * jadi layar lebih kecil (laptop, tablet, ponsel) mengecil halus, bukan terpotong.
+   * Jarak antar section: `h-section`, `py-section`, dst. Judul: `text-display`, `text-title`, `text-hero`.
+   */
+  --spacing-section: clamp(60px, 7.8vw, 150px);
+  --spacing-section-sm: clamp(60px, 5.2vw, 100px);
+  --spacing-stack: clamp(30px, 3.4vw, 65px);
+  --spacing-stack-sm: clamp(30px, 2.6vw, 50px);
+  --text-display: clamp(32px, 3.125vw, 60px);
+  --text-title: clamp(28px, 2.5vw, 48px);
+  --text-hero: clamp(42px, 4.17vw, 80px);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-bright: var(--bright);
+  --color-dark: var(--dark);
+  --color-header: var(--header);
+  --color-overlay: var(--overlay);
+  --color-line: var(--line);
+  --font-sans: var(--font-prompt);
+  --font-heading: var(--font-baskervville);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --animate-marquee: marquee 20s linear infinite;
+  --animate-pulse-ring: pulse-ring 1500ms ease-out infinite;
+  --animate-spinner: spinner 1s linear infinite;
+  --animate-letters: letters 3s infinite;
+  --animate-drop-line: drop-line 4.5s ease-in-out infinite;
+
+  /* Segmen emas turun menyusuri garis kolom, lalu memudar di ujung bawah. */
+  @keyframes drop-line {
+    0% {
+      top: -60px;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes pulse-ring {
+    from {
+      scale: 1;
+      opacity: 1;
+    }
+    to {
+      scale: 1.5;
+      opacity: 0;
+    }
+  }
+  @keyframes spinner {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes letters {
+    0%,
+    75%,
+    100% {
+      opacity: 0;
+      transform: rotateY(-90deg);
+    }
+    25%,
+    50% {
+      opacity: 1;
+      transform: rotateY(0deg);
+    }
+  }
+}
+
+/*
+ * Tema Elegencia: gelap dengan aksen emas. Satu-satunya tempat warna mentah.
+ * Nama token shadcn dipertahankan agar komponen ui/ ikut tema.
+ */
+:root {
+  --background: #040d10;
+  --foreground: #c8c8c8;
+  --surface: #091e24;
+  --bright: #ffffff;
+  --dark: #000000;
+  --header: #000000da;
+  --overlay: #000000e7;
+  --line: #635542;
+  --card: #040d10;
+  --card-foreground: #c8c8c8;
+  --popover: #040d10;
+  --popover-foreground: #ffffff;
+  --primary: #ffd28d;
+  --primary-foreground: #000000;
+  --secondary: #05161a;
+  --secondary-foreground: #ffffff;
+  --muted: #091e24;
+  --muted-foreground: #999696;
+  --accent: #ba9774;
+  --accent-foreground: #000000;
+  --destructive: #f87171;
+  --border: #4f4836;
+  --input: #4f4836;
+  --ring: #ffd28d;
+  --radius: 0rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+
+  /*
+   * Hanya body yang memotong overflow horizontal (menjalar ke viewport). Jika html ikut
+   * `overflow-x: hidden`, scrollbar tetap ada saat dialog mengunci scroll body, lalu
+   * kompensasi lebar scrollbar dari Radix menggeser seluruh halaman ±8px.
+   */
+  body {
+    overflow-x: hidden;
+  }
+
+  @media (min-width: 62rem) {
+    html,
+    body {
+      font-size: 18px;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading text-primary font-normal;
+    clear: both;
+    line-height: normal;
+  }
+
+  h1 {
+    font-size: var(--text-hero);
+  }
+  h2 {
+    font-size: var(--text-display);
+  }
+  h3 {
+    font-size: var(--text-title);
+  }
+  h4 {
+    font-size: clamp(24px, 1.875vw, 36px);
+  }
+  h5 {
+    font-size: 26px;
+  }
+  h6 {
+    font-size: 20px;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  a {
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  a:hover {
+    @apply text-primary;
+  }
+
+  button {
+    transition: all 0.3s ease;
+  }
+}
+
+/*
+ * Margin samping konten (bukan gambar/latar; itu sengaja di luar container dan tetap full-width).
+ * 20px di ponsel, 40px di tablet, lalu mengikuti lebar layar (9vw) sampai 173px di 1920px,
+ * jadi tepi kiri teks tetap sejajar dengan hero di semua lebar. Di atas 1920px container berhenti
+ * melebar dan dipusatkan. Elemen absolut yang harus sejajar container memakai var(--gutter).
+ */
+:root {
+  --gutter: 20px;
+}
+@media (min-width: 48rem) {
+  :root {
+    --gutter: 40px;
+  }
+}
+@media (min-width: 62rem) {
+  :root {
+    --gutter: clamp(40px, 9vw, 173px);
+  }
+}
+
+/*
+ * `max-width` ditulis ulang karena utility `container` bawaan Tailwind tetap terbit dengan max-width per breakpoint.
+ */
+@utility container {
+  width: 100%;
+  max-width: 1920px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+
+  @media (min-width: 62rem) {
+    max-width: 1920px;
+  }
+}
+
+@utility container-fluid {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 0.75rem;
+}

@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   experimental: {
     agentFeedback: true,
   },
+  images: {
+    localPatterns: [
+      { pathname: "/images/bg/**" },
+      { pathname: "/**", search: "" },
+    ],
+  },
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
